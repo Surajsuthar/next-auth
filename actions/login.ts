@@ -6,6 +6,9 @@ import { db } from "@/lib/db"
 import { signIn } from "@/auth"
 import { DEFAULT_LOGIN_ROUTE } from "@/route"
 import { AuthError } from "next-auth"
+import { getUserByEmail } from "@/data"
+import { error } from "console"
+import { generateVerificationToken } from "@/lib/token"
 
 
 export const login = async ( values : z.infer<typeof LoginSchema> ) => {
@@ -15,7 +18,15 @@ export const login = async ( values : z.infer<typeof LoginSchema> ) => {
     }
 
     const { email, password } = valiDateFeild.data
-    console.log("Details",email,password)
+    const existingUser = await getUserByEmail(email);
+    if(!existingUser || !existingUser.email || !existingUser.password) {
+        return { error : "Email doesnt exist"}
+    } 
+
+    if(!existingUser.emailVerified) {
+        const verificationToken = await generateVerificationToken(existingUser.email);
+        return  { success : "Confiramation email sent"};
+    }
 
     try {
         await signIn("credentials" , {
