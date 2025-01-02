@@ -9,6 +9,7 @@ import { AuthError } from "next-auth"
 import { getUserByEmail } from "@/data"
 import { error } from "console"
 import { generateVerificationToken } from "@/lib/token"
+import { sendVeficationEmail } from "@/lib/mail"
 
 
 export const login = async ( values : z.infer<typeof LoginSchema> ) => {
@@ -25,6 +26,10 @@ export const login = async ( values : z.infer<typeof LoginSchema> ) => {
 
     if(!existingUser.emailVerified) {
         const verificationToken = await generateVerificationToken(existingUser.email);
+        await sendVeficationEmail(
+            verificationToken.email,
+            verificationToken.token
+        )
         return  { success : "Confiramation email sent"};
     }
 
