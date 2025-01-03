@@ -20,6 +20,7 @@ import { FormError } from "../form-error";
 import { FormSuccess } from "../form-success";
 import { login } from "../../../actions/login";
 import { useState, useTransition } from "react";
+import Link from "next/link";
 
 export const LoginForm = () => {
   const searchParams = useSearchParams()
@@ -94,6 +95,16 @@ export const LoginForm = () => {
                         type="Password"
                       />
                     </FormControl>
+                    <Button
+                    size="sm"
+                    variant="link"
+                    asChild
+                    className="px-0 font-normal"
+                    >
+                      <Link href="/auth/reset"> 
+                        forgot Password
+                      </Link>
+                    </Button>
                     <FormMessage />
                   </FormItem>
                 )}
